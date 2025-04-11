@@ -3,7 +3,8 @@ const block = document.getElementById('block');
 const scoreElement = document.getElementById('score');
 let score = 0;
 
-// وظائف الحركة كما هي
+
+
 function moveLeft() {
     const curLeft = parseInt(window.getComputedStyle(player).getPropertyValue('left'));
     if (curLeft <= 0) return;
@@ -16,13 +17,13 @@ function moveRight() {
     player.style.left = (curLeft + 100) + "px";
 }
 
-// أحداث لوحة المفاتيح (كما هي)
+
 document.addEventListener('keydown', (event) => {
     if(event.key == "ArrowLeft") moveLeft();
     else if(event.key == "ArrowRight") moveRight();
 });
 
-// إنشاء أزرار اللمس
+
 function createTouchButtons() {
     const controlsDiv = document.createElement('div');
     controlsDiv.style.position = 'fixed';
@@ -51,11 +52,11 @@ function createTouchButtons() {
     rightBtn.style.background = 'rgba(0,0,0,0.5)';
     rightBtn.style.color = 'white';
     
-    // أحداث اللمس
+    block.style.animationPlayState = 'paused';
     leftBtn.addEventListener('touchstart', moveLeft);
     rightBtn.addEventListener('touchstart', moveRight);
     
-    // لمنع السلوك الافتراضي
+   
     leftBtn.addEventListener('touchmove', (e) => e.preventDefault());
     rightBtn.addEventListener('touchmove', (e) => e.preventDefault());
     
@@ -64,10 +65,18 @@ function createTouchButtons() {
     document.body.appendChild(controlsDiv);
 }
 
-createTouchButtons();
 
-// بقية الكود كما هي
+createTouchButtons();
+startButton.addEventListener('click', () => {
+    gameStarted = true;
+    block.style.animationPlayState = 'running';
+    document.addEventListener('keydown', keyHandler);
+    startButton.style.display = 'none';
+    increaseSpeed();
+});
+
 block.addEventListener('animationiteration', () => {
+    startButton.style.display = 'none';
     const randPos = Math.floor((Math.random() * 3)) * 100;
     block.style.left = randPos + "px";
     score++;  
@@ -86,3 +95,10 @@ setInterval(() => {
         location.reload();
     }
 }, 1);
+function increaseSpeed() {
+    setInterval(() => {
+        if (speed > 0.5) {
+            speed -= 0.1;
+            block.style.animation = `fall ${speed}s linear infinite`;
+        }
+}, 8000);}
