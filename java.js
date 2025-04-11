@@ -3,22 +3,17 @@ const block = document.getElementById('block');
 const scoreElement = document.getElementById('score');
 let score = 0;
 
-// متغيرات لتتبع حالة اللمس
-let touchStartX = 0;
-const touchThreshold = 50; // الحد الأدنى للمسافة لاعتبارها حركة
-
+// وظائف الحركة كما هي
 function moveLeft() {
     const curLeft = parseInt(window.getComputedStyle(player).getPropertyValue('left'));
     if (curLeft <= 0) return;
-    const newLeft = curLeft - 100;
-    player.style.left = newLeft + "px";
+    player.style.left = (curLeft - 100) + "px";
 }
 
 function moveRight() {
     const curLeft = parseInt(window.getComputedStyle(player).getPropertyValue('left'));
     if (curLeft >= 200) return;
-    const newLeft = curLeft + 100;
-    player.style.left = newLeft + "px";
+    player.style.left = (curLeft + 100) + "px";
 }
 
 // أحداث لوحة المفاتيح (كما هي)
@@ -27,26 +22,51 @@ document.addEventListener('keydown', (event) => {
     else if(event.key == "ArrowRight") moveRight();
 });
 
-// أحداث اللمس الجديدة
-document.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-});
-
-document.addEventListener('touchmove', (e) => {
-    e.preventDefault(); // لمنع التمرير الأفقي للصفحة
-    const touchEndX = e.touches[0].clientX;
-    const diff = touchEndX - touchStartX;
+// إنشاء أزرار اللمس
+function createTouchButtons() {
+    const controlsDiv = document.createElement('div');
+    controlsDiv.style.position = 'fixed';
+    controlsDiv.style.bottom = '20px';
+    controlsDiv.style.width = '100%';
+    controlsDiv.style.display = 'flex';
+    controlsDiv.style.justifyContent = 'center';
+    controlsDiv.style.gap = '60px';
+    controlsDiv.style.zIndex = '100';
     
-    if(diff > touchThreshold) {
-        moveRight();
-        touchStartX = touchEndX; // إعادة التعيين لتجنب الحركات المتتالية
-    } else if(diff < -touchThreshold) {
-        moveLeft();
-        touchStartX = touchEndX;
-    }
-});
+    const leftBtn = document.createElement('button');
+    leftBtn.innerHTML = '⬅';
+    leftBtn.style.fontSize = '30px';
+    leftBtn.style.padding = '15px 25px';
+    leftBtn.style.borderRadius = '50%';
+    leftBtn.style.border = 'none';
+    leftBtn.style.background = 'rgba(0,0,0,0.5)';
+    leftBtn.style.color = 'white';
+    
+    const rightBtn = document.createElement('button');
+    rightBtn.innerHTML = '➡';
+    rightBtn.style.fontSize = '30px';
+    rightBtn.style.padding = '15px 25px';
+    rightBtn.style.borderRadius = '50%';
+    rightBtn.style.border = 'none';
+    rightBtn.style.background = 'rgba(0,0,0,0.5)';
+    rightBtn.style.color = 'white';
+    
+    // أحداث اللمس
+    leftBtn.addEventListener('touchstart', moveLeft);
+    rightBtn.addEventListener('touchstart', moveRight);
+    
+    // لمنع السلوك الافتراضي
+    leftBtn.addEventListener('touchmove', (e) => e.preventDefault());
+    rightBtn.addEventListener('touchmove', (e) => e.preventDefault());
+    
+    controlsDiv.appendChild(leftBtn);
+    controlsDiv.appendChild(rightBtn);
+    document.body.appendChild(controlsDiv);
+}
 
-// بقية الكود كما هو
+createTouchButtons();
+
+// بقية الكود كما هي
 block.addEventListener('animationiteration', () => {
     const randPos = Math.floor((Math.random() * 3)) * 100;
     block.style.left = randPos + "px";
@@ -60,7 +80,7 @@ setInterval(() => {
     let blockTop = parseInt(window.getComputedStyle(block).getPropertyValue('top'));
     
     if (playerLeft == blockLeft && blockTop < 450 && blockTop > 310) {
-        alert(`Game Over !!!!!!\n Your Score: ${score}`);
+        alert(`Game Over! Your Score: ${score}`);
         block.style.top = -100 + 'px';
         score = 0;
         location.reload();

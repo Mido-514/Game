@@ -60,3 +60,13 @@ animation:moveDown 1s linear infinite ;
     font-size: larger;
     z-index: 100;
 }
+button {
+    touch-action: manipulation;
+  }
+  
+  /* إخفاء الأزرار على أجهزة الكمبيوتر */
+  @media (min-width: 768px) {
+    [style*="fixed; bottom: 20px;"] {
+      display: none !important;
+    }
+  }
