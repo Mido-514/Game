@@ -1,4 +1,16 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+/* لمنع السلوك الافتراضي لللمس */
+body {
+    touch-action: manipulation;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
 *{
     font-family:"poppins",sans-serif;
     margin: 0;
